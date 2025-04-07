@@ -1,1 +1,296 @@
+print("_____________________WELCOME TO APOLLO THEATRE_____________________")
+
+while True:
+    print("1.About")
+    print("2.User")
+    print("3.Admin")
+    print("4.Help")
+    print("5.Quit")
+    ch = int(input("Enter your choice: "))
+
+    # ABOUT
+    if ch == 1:
+        print("""
+theater_name = "Apollo Theater"
+address = "123 Main Street, City"
+phone_number = "6235456733"
+website = "www.apollotheatre.com"
+        """)
+
+    # USER
+    elif ch == 2:
+        print("_________________WELCOME USER_________________")
+
+        import csv
+
+        movies = {
+            "movie 1": {"price": 10, "seats": 60},
+            "movie 2": {"price": 12, "seats": 80},
+            "movie 3": {"price": 8, "seats": 100},
+            "movie 4": {"price": 20, "seats": 60},
+            "movie 5": {"price": 23, "seats": 75},
+            "movie 6": {"price": 9, "seats": 100}
+        }
+
+        user_bookings = []
+        movie_database_file = "movie_database.csv"
+
+        def display_movies():
+            print("**********************Available Movies**********************")
+            try:
+                with open(movie_database_file, mode='r', newline='') as file:
+                    reader = csv.reader(file)
+                    mov = list(reader)
+                    for i in mov:
+                        print(i[0], i[1], sep=",")
+            except FileNotFoundError:
+                return []
+            print()
+            for movie in movies:
+                print(f"{movie} - ${movies[movie]['price']} per ticket")
+
+        def book_tickets():
+            display_movies()
+            print("Sample input: movie 1")
+            movie_name = input("Enter the movie number (e.g., movie 1): ").lower()
+            if movie_name in movies:
+                num_seats = int(input("Enter the number of seats to book: "))
+                if 0 < num_seats <= movies[movie_name]["seats"]:
+                    total_cost = num_seats * movies[movie_name]["price"]
+                    print(f"Total cost: ${total_cost}")
+                    confirmation = input("Confirm booking (yes/no): ")
+                    if confirmation.lower() == "yes":
+                        movies[movie_name]["seats"] -= num_seats
+                        user_bookings.append({"movie": movie_name, "seats": num_seats, "total_cost": total_cost})
+                        print(f"Successfully booked {num_seats} seat(s) for {movie_name}.")
+                    else:
+                        print("Booking canceled.")
+                else:
+                    print("Invalid number of seats.")
+            else:
+                print("Invalid movie selection.")
+
+        def display_bookings():
+            if not user_bookings:
+                print("You have no bookings yet.")
+            else:
+                print("Your Bookings:")
+                for booking in user_bookings:
+                    print(f"Movie: {booking['movie']}, Seats: {booking['seats']}, Total Cost: ${booking['total_cost']}")
+
+        def seat_booking():
+            print("Seat Booking for Apollo theatre")
+            num_rows = 15
+            num_seats_per_row = 20
+            theater = [['O' for _ in range(num_seats_per_row)] for _ in range(num_rows)]
+
+            def display_theater():
+                print("Theater Seating:")
+                print(" " + " ".join([str(i) for i in range(1, num_seats_per_row + 1)]))
+                for row_num, row in enumerate(theater, start=1):
+                    print(f"{row_num} {' '.join(row)}")
+
+            def book_seats(num_seats_to_book):
+                booked_seats = []
+                for row in range(num_rows):
+                    available_seats = [i for i, seat in enumerate(theater[row]) if seat == 'O']
+                    if len(available_seats) >= num_seats_to_book:
+                        booked_seats = available_seats[:num_seats_to_book]
+                        for i in booked_seats:
+                            theater[row][i] = 'X'
+                        print(f"Booked {num_seats_to_book} seat(s) in row {row + 1}: {', '.join(str(s + 1) for s in booked_seats)}")
+                        return
+                print("Seats are not available for the requested number.")
+
+            while True:
+                print("\nApollo Theater Seat Booking System")
+                print("1. Display Theater Seating")
+                print("2. Book Seats")
+                print("3. Exit")
+                choice = input("Enter your choice: ")
+                if choice == "1":
+                    display_theater()
+                elif choice == "2":
+                    num_seats = int(input("Enter number of seats to book: "))
+                    if num_seats <= 0:
+                        print("Invalid number of seats.")
+                    else:
+                        book_seats(num_seats)
+                elif choice == "3":
+                    break
+                else:
+                    print("Invalid choice.")
+
+        def user_menu():
+            while True:
+                print("\nMovie Theater Booking System")
+                print("1. Display Available Movies")
+                print("2. Book Tickets")
+                print("3. Display Your Bookings")
+                print("4. Seat Booking")
+                print("5. Exit")
+                choice = input("Enter your choice: ")
+                if choice == "1":
+                    display_movies()
+                elif choice == "2":
+                    book_tickets()
+                elif choice == "3":
+                    display_bookings()
+                elif choice == "4":
+                    seat_booking()
+                elif choice == "5":
+                    break
+                else:
+                    print("Invalid choice.")
+
+        user_menu()
+
+        print("Want some snacks to enjoy while watching our movie?........")
+        ch = input("Enter y/n: ")
+        if ch.lower() == 'y':
+            print("_______________WELCOME TO APOLLO SNACKS BAR_______________")
+            menu = {
+                "Popcorn": 5.0,
+                "Pepsi": 3.0,
+                "Cococola": 3.5,
+                "Candy": 2.5,
+                "Sandwich": 6.0,
+                "Lays": 4.0
+            }
+            order = {}
+            print("Snack Bar Menu:")
+            for item, price in menu.items():
+                print(f"{item}: ${price:.2f}")
+            while True:
+                choice = input("Enter the item you want to order (or 'exit' to finish): ").capitalize()
+                if choice == 'Exit':
+                    break
+                if choice in menu:
+                    quantity = int(input(f"How many {choice}s would you like to order? "))
+                    if choice in order:
+                        order[choice] += quantity
+                    else:
+                        order[choice] = quantity
+                else:
+                    print("Invalid item. Please choose from the menu.")
+            if order:
+                print("\nOrder Summary:")
+                total_price = 0
+                for item, quantity in order.items():
+                    price = menu[item]
+                    subtotal = price * quantity
+                    print(f"{item}: {quantity} x ${price:.2f} = ${subtotal:.2f}")
+                    total_price += subtotal
+                print(f"Total: ${total_price:.2f}")
+            else:
+                print("No orders placed.")
+        else:
+            print("Oops, you could have enjoyed some snacks, but still thank you!")
+
+    # ADMIN
+    elif ch == 3:
+        import csv
+        movie_database_file = "movie_database.csv"
+
+        def get_movies():
+            try:
+                with open(movie_database_file, mode='r', newline='') as file:
+                    reader = csv.reader(file)
+                    return list(reader)
+            except FileNotFoundError:
+                return []
+
+        def view_movies():
+            movies = get_movies()
+            if not movies:
+                print("No movies found in the database.")
+            else:
+                print(f"{'ID':<5}{'Title':<30}{'Genre':<25}{'Release Date'}")
+                for i, movie in enumerate(movies, start=1):
+                    print(f"{i:<5}{movie[0]:<30}{movie[1]:<25}{movie[2]}")
+
+        def add_movie():
+            title = input("Enter the movie title: ")
+            genre = input("Enter the movie genre: ")
+            release_date = input("Enter the release date (YYYY-MM-DD): ")
+            with open(movie_database_file, mode='a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow([title, genre, release_date])
+            print("Movie added successfully!")
+
+        def remove_movie():
+            movies = get_movies()
+            view_movies()
+            movie_id = int(input("Enter the movie ID you want to remove: "))
+            if 1 <= movie_id <= len(movies):
+                removed = movies.pop(movie_id - 1)
+                with open(movie_database_file, mode='w', newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerows(movies)
+                print(f"Movie removed: {removed[0]}")
+            else:
+                print("Invalid movie ID.")
+
+        print("Are you an admin?")
+        p = input("Enter the password: ")
+        if p in ["niya123", "sanjana123", "gayathri123"]:
+            print("________________Welcome Admin________________")
+            while True:
+                print("\nOptions:")
+                print("1. Add a movie")
+                print("2. Remove a movie")
+                print("3. View movies")
+                print("4. Exit")
+                choice = input("Enter your choice: ")
+                if choice == "1":
+                    if len(get_movies()) >= 6:
+                        print("All screens are filled. Remove a movie before adding.")
+                    else:
+                        add_movie()
+                elif choice == "2":
+                    remove_movie()
+                elif choice == "3":
+                    view_movies()
+                elif choice == "4":
+                    break
+                else:
+                    print("Invalid choice. Please try again.")
+        else:
+            print("Sorry, you are not an admin.")
+
+    # HELP
+    elif ch == 4:
+        print("""
+Welcome to Apollo Theater Help Center!
+If you have any questions or need assistance during your visit, please refer to the following information:
+
+1. Ticket Purchase:
+ - Tickets can be purchased at the box office or online through our website.
+ - Online booking: Visit www.apollotheatre.com and follow the steps to book your tickets.
+
+2. Seating:
+ - Theater staff will guide you to your seats. Please cooperate with them to ensure a smooth experience.
+
+3. Snack Bar:
+ - We have a snack bar with a variety of snacks and beverages for your enjoyment.
+
+4. Restrooms:
+ - Restrooms are located on every other corner of our building.
+
+5. Contact Information:
+ - In case of emergencies or questions, please contact us at:
+ Phone: 6235345673
+ Email: info@myapollo.com
+
+Enjoy your movie, and thank you for choosing ApolloTheater!
+        """)
+
+    # QUIT
+    elif ch == 5:
+        print("EXITING APOLLO THEATRE........")
+        print("Thank You for being a part of Apollo Theatre, See you next time")
+        break
+
+    else:
+        print("Invalid choice. Please try again.")
 
